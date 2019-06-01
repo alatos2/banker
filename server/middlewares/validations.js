@@ -20,7 +20,7 @@ const validateSignup = (user) => {
 
 const validateSignin = (user) => {
   const schema = {
-    email: Joi.string().email({ minDomainAtoms: 2 }).required(),
+    email: Joi.string().email({ minDomainSegments: 2 }).required().error(_error => ({ message: 'Email must be valid' })),
     password: Joi.string().required(),
   };
   return Joi.validate(user, schema);

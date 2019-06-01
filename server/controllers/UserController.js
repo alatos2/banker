@@ -24,7 +24,7 @@ class UserController {
     if (result.error) {
       const errorMessage = result.error.details[0].message;
 
-      res.status(400).json({
+      return res.status(400).json({
         status: 400,
         error: errorMessage.replace(/[^a-zA-Z ]/g, ''),
       });
@@ -50,7 +50,15 @@ class UserController {
 
     users.push(userData);
 
-    res.status(201).json({
+    const emailExist = users.find(user => user.email === email);
+    if (emailExist) {
+      return res.status(400).json({
+        status: 400,
+        error: 'Email already exists',
+      });
+    }
+
+    return res.header('Authorization', `${utils.jwtToken(userData)}`).status(201).json({
       status: 201,
       data: {
         token: utils.jwtToken(userData),
